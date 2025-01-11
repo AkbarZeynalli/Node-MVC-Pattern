@@ -15,7 +15,7 @@ export const addProduct = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error",
-            error: error.message // Optionally send the error message for debugging
+            error: error.message
         });
     }
 };
@@ -51,14 +51,13 @@ export const getProductById = async (req, res) => {
     }
 }
 
-export const deleProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
     const { id } = req.params;
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res
                 .status(400)
                 .json({ success: false, message: "Invalid product id" })
-
         }
         const deleteProduct = await product.findByIdAndDelete(id)
         if (!deleteProduct) {
@@ -70,6 +69,31 @@ export const deleProduct = async (req, res) => {
     } catch (error) {
         return res
             .status(500)
-            .json * { success: false, message: "Internal server error " }
+            .json({ success: false, message: "Internal server error " })
     }
+}
+
+export const updateProduct = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Invalid product id" })
+        }
+        const updateProduct = await product.findByIdAndUpdate(id, req.body)
+        if (!updateProduct) {
+            return res.status(400).json({ success: false, message: "Product not update" })
+        }
+        else {
+            return res.status(200).json({ success: true, message: "Product update successfly" })
+        }
+
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ success: false, message: "international server error" })
+    }
+
 }
